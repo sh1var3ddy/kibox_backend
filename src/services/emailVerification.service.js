@@ -8,20 +8,19 @@ const OTP_EXPIRY_MINUTES = 3;
 
 export const sendEmailVerificationOtp = async (user) => {
   try {
-    // 1️⃣ Generate OTP and hash it
+
     const otp = generateOtp();
     const otpHash = await bcrypt.hash(otp, 10);
 
     logger.info(`Generated OTP for userId: ${user._id}, email: ${user.email}`);
 
-    // 2️⃣ Remove any existing OTPs for email verification
     await Otp.deleteMany({
       userId: user._id,
       purpose: "EMAIL_VERIFY"
     });
     logger.info(`Removed old OTPs for userId: ${user._id}`);
 
-    // 3️⃣ Store new OTP in DB
+   
     await Otp.create({
       userId: user._id,
       otpHash,
@@ -30,7 +29,6 @@ export const sendEmailVerificationOtp = async (user) => {
     });
     logger.info(`Stored new OTP in DB for userId: ${user._id}`);
 
-    // 4️⃣ Send OTP email — must succeed
     try {
       await sendEmail({
         to: user.email,
