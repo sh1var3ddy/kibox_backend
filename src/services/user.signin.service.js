@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
 import { findUserByEmail } from "../repositories/user.repository.js";
-import { generateToken } from "../utils/jwt.utils.js";
+import { generateToken } from "../utils/jwt.util.js";
 
 export const loginUser = async ({ email, password }) => {
 
