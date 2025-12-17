@@ -1,9 +1,9 @@
 import User from "../models/User.model.js";
 import { sendEmailVerificationOtp } from "../services/emailVerification.service.js";
-import { verifyEmailOtpService } from "../services/verifyEmailOtp.service.js";
+import { verifyOtpService } from "../services/verifyOtp.service.js";
 import logger from "../utils/logger.js";
 
-export const resendEmailOtp = async (req, res) => {
+export const resendOtp = async (req, res) => {
   try {
     const { email } = req.body;
     logger.info(`Resend OTP request received for email: ${email}`);
@@ -42,7 +42,7 @@ export const resendEmailOtp = async (req, res) => {
 };
 
 
-export const verifyEmailOtp = async (req, res) => {
+export const verifyOtp = async (req, res) => {
   try {
     const { email, otp } = req.body;
     logger.info(`Verify OTP request received for email: ${email}`);
@@ -53,7 +53,15 @@ export const verifyEmailOtp = async (req, res) => {
     }
 
     try {
-      const result = await verifyEmailOtpService({ email, otp });
+      const {result} = await verifyOtpService({
+        email,
+        otp,
+        purpose: "EMAIL_VERIFY",
+        onVerified: async (user) => {
+            user.emailVerified = true;
+            await user.save();
+        }
+        });
       logger.info(`OTP verified successfully for email: ${email}`);
       res.status(200).json(result);
     } catch (otpErr) {

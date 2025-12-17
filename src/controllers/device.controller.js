@@ -5,8 +5,7 @@ export const updateWeight = async (req, res) => {
     const { deviceId, weight } = req.body;
 
     const { isFirstTime, data } =
-      await updateDeviceWeightService({ deviceId, weight });
-    console.log(isFirstTime, data)
+    await updateDeviceWeightService({ deviceId, weight });
     res.status(isFirstTime ? 201 : 200).json({
       success: true,
       message: isFirstTime
