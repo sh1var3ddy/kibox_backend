@@ -61,8 +61,8 @@ export const verifyOtp = async (req, res) => {
         otp,
         purpose: "EMAIL_VERIFY",
         onVerified: async (user) => {
-            user.emailVerified = true;
-            await user.save();
+          user.emailVerified = true;
+          await user.save();
         }
       });
       logger.info(`OTP verified successfully for email: ${email}`);

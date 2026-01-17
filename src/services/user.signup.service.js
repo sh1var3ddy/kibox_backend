@@ -45,6 +45,6 @@ export const registerUser = async ({ name, email, password }) => {
     };
   } catch (err) {
     logger.error(`Failed to register user with email ${email}: ${err.message}`);
-    throw err; 
+    throw err;
   }
 };

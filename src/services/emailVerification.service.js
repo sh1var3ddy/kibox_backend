@@ -20,7 +20,7 @@ export const sendEmailVerificationOtp = async (user) => {
     });
     logger.info(`Removed old OTPs for userId: ${user._id}`);
 
-   
+
     await Otp.create({
       userId: user._id,
       otpHash,

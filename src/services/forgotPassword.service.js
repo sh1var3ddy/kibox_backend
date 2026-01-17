@@ -1,5 +1,5 @@
 import User from "../models/User.model.js";
-import {sendPasswordResetOtp} from "./passwordResetOtp.service.js";
+import { sendPasswordResetOtp } from "./passwordResetOtp.service.js";
 import logger from "../utils/logger.js";
 
 export const forgotPasswordService = async (email) => {
