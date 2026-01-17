@@ -1,20 +1,25 @@
 import winston from "winston";
 
-const { combine, timestamp, printf, colorize } = winston.format;
+const isProd = process.env.NODE_ENV === "production";
+const isVercel = !!process.env.VERCEL; // set automatically on Vercel
 
-// Custom log format
-const logFormat = printf(({ level, message, timestamp }) => {
-  return `[${timestamp}] ${level}: ${message}`;
+const transports = [
+  new winston.transports.Console({
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    ),
+  }),
+];
+
+// Only write to disk when NOT on Vercel
+if (!isVercel && !isProd) {
+  transports.push(
+    new winston.transports.File({ filename: "logs/app.log" })
+  );
+}
+
+export const logger = winston.createLogger({
+  level: isProd ? "info" : "debug",
+  transports,
 });
-
-const logger = winston.createLogger({
-  level: "info", // default logging level
-  format: combine(timestamp(), colorize(), logFormat),
-  transports: [
-    new winston.transports.Console(), // log to console
-    new winston.transports.File({ filename: "logs/error.log", level: "error" }),
-    new winston.transports.File({ filename: "logs/combined.log" })
-  ]
-});
-
-export default logger;
