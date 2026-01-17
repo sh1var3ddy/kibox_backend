@@ -1,5 +1,5 @@
 import { forgotPasswordService } from "../services/forgotPassword.service.js";
-import logger from "../utils/logger.js";
+
 import { StatusCodes } from "http-status-codes";
 
 export const forgotPassword = async (req, res) => {
@@ -7,21 +7,21 @@ export const forgotPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      logger.warn("Forgot password failed: missing email");
+      console.warn("Forgot password failed: missing email");
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Email is required" });
     }
 
     await forgotPasswordService(email);
-    logger.info(`Forgot password request processed for email: ${email}`);
+    console.log(`Forgot password request processed for email: ${email}`);
 
     return res
       .status(StatusCodes.OK)
       .json({ message: "If the email exists, a reset code has been sent" });
 
   } catch (err) {
-    logger.error(`Forgot password failed: ${err.message}`);
+    console.error(`Forgot password failed: ${err.message}`);
     return res
       .status(StatusCodes.INTERNAL_SERVER_ERROR)
       .json({ message: "Something went wrong" });

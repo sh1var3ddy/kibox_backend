@@ -2,7 +2,7 @@ import bcrypt from "bcryptjs";
 import Otp from "../models/Otp.model.js";
 import { generateOtp } from "../utils/otp.util.js";
 import { sendEmail } from "../utils/email.util.js";
-import logger from "../utils/logger.js";
+
 
 const OTP_EXPIRY_MINUTES = 3;
 
@@ -12,13 +12,13 @@ export const sendEmailVerificationOtp = async (user) => {
     const otp = generateOtp();
     const otpHash = await bcrypt.hash(otp, 10);
 
-    logger.info(`Generated OTP for userId: ${user._id}, email: ${user.email}`);
+    console.log(`Generated OTP for userId: ${user._id}, email: ${user.email}`);
 
     await Otp.deleteMany({
       userId: user._id,
       purpose: "EMAIL_VERIFY"
     });
-    logger.info(`Removed old OTPs for userId: ${user._id}`);
+    console.log(`Removed old OTPs for userId: ${user._id}`);
 
 
     await Otp.create({
@@ -27,7 +27,7 @@ export const sendEmailVerificationOtp = async (user) => {
       purpose: "EMAIL_VERIFY",
       expiresAt: new Date(Date.now() + OTP_EXPIRY_MINUTES * 60 * 1000)
     });
-    logger.info(`Stored new OTP in DB for userId: ${user._id}`);
+    console.log(`Stored new OTP in DB for userId: ${user._id}`);
 
     try {
       await sendEmail({
@@ -35,16 +35,16 @@ export const sendEmailVerificationOtp = async (user) => {
         subject: "Verify your email",
         text: `Your email verification code is ${otp}. It expires in ${OTP_EXPIRY_MINUTES} minutes.`
       });
-      logger.info(`OTP email sent successfully to: ${user.email}`);
+      console.log(`OTP email sent successfully to: ${user.email}`);
     } catch (emailErr) {
-      logger.error(`Failed to send OTP email to ${user.email}: ${emailErr.message}`);
+      console.error(`Failed to send OTP email to ${user.email}: ${emailErr.message}`);
       throw new Error("Failed to send verification email. Please try again later.");
     }
 
     return { success: true };
 
   } catch (err) {
-    logger.error(`Failed to generate/send email OTP for userId: ${user._id}, error: ${err.message}`);
+    console.error(`Failed to generate/send email OTP for userId: ${user._id}, error: ${err.message}`);
     throw err; // propagate to service → controller
   }
 };

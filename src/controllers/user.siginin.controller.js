@@ -1,5 +1,5 @@
 import { loginUser } from "../services/user.signin.service.js";
-import logger from "../utils/logger.js";
+
 import { StatusCodes } from "http-status-codes";
 
 export const signinUser = async (req, res) => {
@@ -7,7 +7,7 @@ export const signinUser = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      logger.warn("Signin failed: missing email or password");
+      console.warn("Signin failed: missing email or password");
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ success: false, message: "Email and password are required" });
@@ -15,7 +15,7 @@ export const signinUser = async (req, res) => {
 
     const { user, token } = await loginUser({ email, password });
 
-    logger.info(`User logged in successfully: ${email}`);
+    console.log(`User logged in successfully: ${email}`);
     return res.status(StatusCodes.OK).json({
       success: true,
       message: "User logged in successfully",
@@ -23,7 +23,7 @@ export const signinUser = async (req, res) => {
     });
 
   } catch (err) {
-    logger.error(`Signin failed for email ${req.body.email}: ${err.message}`);
+    console.error(`Signin failed for email ${req.body.email}: ${err.message}`);
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ success: false, message: err.message });

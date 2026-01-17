@@ -3,7 +3,7 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.model.js";
 import Otp from "../models/Otp.model.js";
 import { JWT_SECRET } from "../config/server.config.js";
-import logger from "../utils/logger.js";
+
 export const resetPasswordService = async ({ resetToken, newPassword }) => {
   try {
     const payload = jwt.verify(resetToken, JWT_SECRET);

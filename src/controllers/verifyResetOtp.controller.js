@@ -1,5 +1,5 @@
 import { verifyOtpService } from "../services/verifyOtp.service.js";
-import logger from "../utils/logger.js";
+
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config/server.config.js";
 import { StatusCodes } from "http-status-codes";
@@ -9,7 +9,7 @@ export const verifyResetOtp = async (req, res) => {
     const { email, otp } = req.body;
 
     if (!email || !otp) {
-      logger.warn("Reset OTP verification failed: missing email or otp");
+      console.warn("Reset OTP verification failed: missing email or otp");
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Email and OTP are required" });
@@ -24,7 +24,7 @@ export const verifyResetOtp = async (req, res) => {
     });
 
     if (!user) {
-      logger.warn(`Reset OTP verification failed: user not found for email ${email}`);
+      console.warn(`Reset OTP verification failed: user not found for email ${email}`);
       return res
         .status(StatusCodes.BAD_REQUEST)
         .json({ message: "Invalid OTP or user not found" });
@@ -37,14 +37,14 @@ export const verifyResetOtp = async (req, res) => {
       { expiresIn: "20m" }
     );
 
-    logger.info(`Reset OTP verified successfully for email: ${email}`);
+    console.log(`Reset OTP verified successfully for email: ${email}`);
     return res.status(StatusCodes.OK).json({
       message: "OTP verified successfully",
       resetToken
     });
 
   } catch (err) {
-    logger.error(`Reset OTP verification failed for email ${req.body.email}: ${err.message}`);
+    console.error(`Reset OTP verification failed for email ${req.body.email}: ${err.message}`);
     return res
       .status(StatusCodes.BAD_REQUEST)
       .json({ message: err.message });
