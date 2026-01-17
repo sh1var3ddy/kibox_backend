@@ -20,14 +20,14 @@ Create a new user account.
     ```json
     {
       "success": true,
-      "message": "User registered successfully"
+      "message": "User registered successfully. Please verify your email with the OTP sent."
     }
     ```
-*   **Error Response (400 Bad Request):**
+*   **Error Response (400 Bad Request / 409 Conflict):**
     ```json
     {
       "success": false,
-      "message": "Email, username, and password are required" // or specific error
+      "message": "Email already registered" // or "Email, username, and password are required"
     }
     ```
 
@@ -56,7 +56,7 @@ Authenticate an existing user.
           "createdAt": "2021-06-25T10:00:00.000Z",
           "__v": 0
         },
-        "token": "jwt_token_string"
+        "token": "jwt_token_string" 
       }
     }
     ```
@@ -64,7 +64,7 @@ Authenticate an existing user.
     ```json
     {
       "success": false,
-      "message": "Invalid credentials"
+      "message": "Invalid password" // or "User not found", "Email and password are required"
     }
     ```
 
@@ -135,10 +135,12 @@ Resend email verification OTP.
       "message": "Verification OTP sent"
     }
     ```
+    *Note: If the email is not found, it returns "If the email exists, a verification code has been sent" to prevent enumeration.*
+
 *   **Error Response (400 Bad Request):**
     ```json
     {
-      "message": "Email already verified"
+      "message": "Email already verified" // or "Email is required"
     }
     ```
 
@@ -162,7 +164,7 @@ Verify email using OTP.
 *   **Error Response (400 Bad Request):**
     ```json
     {
-      "message": "Invalid OTP"
+      "message": "Invalid OTP" // or "Email and OTP are required"
     }
     ```
 
@@ -196,7 +198,7 @@ Verify OTP for password reset (intermediate step before resetting password).
 ## Device Management (`/device`)
 
 ### 1. Update Weight
-Update the weight of a box. This is likely called by the hardware.
+Update the weight of a box.
 
 *   **Endpoint:** `POST /device/weight`
 *   **Request Body:**
@@ -233,7 +235,6 @@ Update the weight of a box. This is likely called by the hardware.
       }
     }
     ```
-    *Note: The code returns 400 if exceeded, but structure is similar.*
 
 ### 2. Update Alert Limit
 Set a weight threshold to trigger alerts.
@@ -313,10 +314,10 @@ Assign a box to a user.
       }
     }
     ```
-*   **Error Response (404/409):**
+*   **Error Response (404/409/400):**
     ```json
     {
       "success": false,
-      "message": "Box not found" // or "Box already registered"
+      "message": "Box not found" // or "Box already registered", "boxId and userId are required"
     }
     ```
