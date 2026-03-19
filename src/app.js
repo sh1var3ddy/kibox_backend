@@ -12,7 +12,7 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: "*",
 }));
-app.options("*", cors());
+app.options(/.*/, cors());
 
 app.get("/", (req, res) => {
     res.status(200).json({ "message": "Welcome to Kibox API" });
